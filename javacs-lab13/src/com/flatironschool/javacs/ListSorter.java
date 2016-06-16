@@ -63,8 +63,45 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> mergeSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+        if (list.size() == 1) {
+        	return list;
+        }
+        List<T> t1 = new ArrayList<T>();
+        List<T> t2 = new ArrayList<T>();
+        for (int i = 0; i < list.size() / 2; i++) {
+        	t1.add(list.get(i));
+        }
+        for (int i = list.size()/2; i < list.size(); i++) {
+        	t2.add(list.get(i));
+        }
+        List<T> st1 = mergeSort(t1, comparator);
+        List<T> st2 = mergeSort(t2, comparator);
+
+        int st1size = 0;
+        int st2size = 0;
+        List<T> result = new ArrayList<T>();
+        while (!st1.isEmpty() && !st2.isEmpty()) {
+        	T st1Val = st1.get(0);
+        	T st2Val = st2.get(0);
+        	int compare = comparator.compare(st1Val, st2Val);
+        	if (compare <= 0) {
+        		result.add(st1Val);
+        		st1.remove(0);
+        	}
+        	else {
+        		result.add(st2Val);
+        		st2.remove(0);
+        		st2size++;
+        	}
+        }
+
+        if (st1.isEmpty()) {
+        	result.addAll(st2);
+        }
+        else {
+        	result.addAll(st1);
+        }
+        return result;
 	}
 
 	/**
@@ -75,7 +112,14 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public void heapSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
+        PriorityQueue<T> heap = new PriorityQueue<T>(comparator);
+        for (T el: list) {
+        	heap.offer(el);
+        }
+        list.clear();
+        while(!heap.isEmpty()) {
+        	list.add(heap.poll());
+        }
 	}
 
 	
@@ -89,8 +133,24 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> topK(int k, List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+		PriorityQueue<T> heap = new PriorityQueue<T>(k, comparator);
+		for(T el: list) {
+			if (heap.size() < k) {
+				heap.offer(el);
+			}
+			else {
+				if (comparator.compare(el, heap.peek()) > 0) {
+					heap.poll();
+					heap.offer(el);
+				}
+			}
+		}
+		
+		List<T> result = new ArrayList<T>();
+		while (!heap.isEmpty()) {
+			result.add(heap.poll());
+		}
+		return result;
 	}
 
 	
